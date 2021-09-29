@@ -94,7 +94,7 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
             executableName = Paths.get(executablePath, executableName).toString();
         }
         if (StringUtils.isNotBlank(executableExtension)) {
-            executableName = Paths.get(executableName, executableExtension).toString();
+            executableName += executableExtension;
         }
         List<String> commands = new ArrayList<>();
         commands.add(executableName);
