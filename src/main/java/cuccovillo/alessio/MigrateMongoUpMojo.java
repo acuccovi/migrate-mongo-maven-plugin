@@ -6,15 +6,17 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import java.util.List;
+
 @Mojo(name = "up", defaultPhase = LifecyclePhase.NONE)
 public class MigrateMongoUpMojo extends MigrateMongoAbstractMojo {
 
     @Parameter
-    CLIOptions upOptions;
+    List<String> upParams;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        processMojo("up", upOptions);
+        processMojo("up", upParams);
     }
 }

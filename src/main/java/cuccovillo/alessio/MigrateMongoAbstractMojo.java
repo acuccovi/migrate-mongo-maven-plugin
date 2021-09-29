@@ -12,74 +12,45 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Usage:
- *            &lt;plugin&gt;
- *                 &lt;groupId&gt;cuccovillo.alessio&lt;/groupId&gt;
- *                 &lt;artifactId&gt;migrate-mongo-maven-plugin&lt;/artifactId&gt;
- *                 &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
- *                 &lt;configuration&gt;
- *                     &lt;skip&gt;false&lt;/skip&gt;
- *                     &lt;configPath&gt;/path/to/config_file.js&lt;/configPath&gt;
- *                     &lt;configFile&gt;config_file.js&lt;/configFile&gt;
- *                     &lt;statusOptions&gt;
- *                         &lt;option&gt;-option1&lt;/option&gt;
- *                         &lt;option&gt;-option2&lt;/option&gt;
- *                         &lt;option&gt;-option2 value&lt;/option&gt;
- *                     &lt;/statusOptions&gt;
- *                     &lt;cleanOptions&gt;
- *                         &lt;option&gt;-option1&lt;/option&gt;
- *                         &lt;option&gt;-option2&lt;/option&gt;
- *                         &lt;option&gt;-option2 value&lt;/option&gt;
- *                     &lt;/cleanOptions&gt;
- *                     &lt;upOptions&gt;
- *                         &lt;option&gt;-option1&lt;/option&gt;
- *                         &lt;option&gt;-option2&lt;/option&gt;
- *                         &lt;option&gt;-option2 value&lt;/option&gt;
- *                     &lt;/upOptions&gt;
- *                     &lt;downOptions&gt;
- *                         &lt;option&gt;-option1&lt;/option&gt;
- *                         &lt;option&gt;-option2&lt;/option&gt;
- *                         &lt;option&gt;-option2 value&lt;/option&gt;
- *                     &lt;/downOptions&gt;
- *                 &lt;/configuration&gt;
- *             &lt;/plugin&gt;
- */
 public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
 
     final Log log = getLog();
 
-    @Parameter(property = "skip", defaultValue = "false")
+    @Parameter
+    String executablePath;
+
+    @Parameter(defaultValue = "false")
     boolean skip;
 
-    @Parameter(property = "configPath", defaultValue = ".")
+    @Parameter(defaultValue = ".")
     String configPath;
 
-    @Parameter(property = "configFile")
+    @Parameter
     String configFile;
 
-    CLIOptions checkList(CLIOptions cliOptions) {
+    List<String> checkList(List<String> cliParams) {
 
-        CLIOptions result;
-        if (cliOptions == null) {
-            result = new CLIOptions();
+        List<String> result;
+        if (cliParams == null) {
+            result = new ArrayList<>();
         } else {
-            result = cliOptions;
+            result = cliParams;
         }
         return result;
     }
 
-    void processMojo(String goal, CLIOptions cliOptions) throws MojoExecutionException, MojoFailureException {
+    void processMojo(String goal, List<String> cliParams) throws MojoExecutionException, MojoFailureException {
 
         try {
             checkIfShouldSkip();
 
-            cliOptions = checkList(cliOptions);
-            Process process = startProcess(goal, cliOptions);
+            cliParams = checkList(cliParams);
+            Process process = startProcess(goal, cliParams);
             printStandardOutput(process);
             printStandardError(process);
             checkExitCode(process);
@@ -101,31 +72,36 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
         }
     }
 
-    Process startProcess(String goal, CLIOptions cliOptions) throws IOException {
+    Process startProcess(String goal, List<String> cliParams) throws IOException {
 
-        ProcessBuilder processBuilder = getProcessBuilder(goal, cliOptions);
+        ProcessBuilder processBuilder = getProcessBuilder(goal, cliParams);
         return processBuilder.start();
     }
 
-    ProcessBuilder getProcessBuilder(String goal, CLIOptions cliOptions) {
+    ProcessBuilder getProcessBuilder(String goal, List<String> cliParams) {
 
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.directory(new File(configPath));
-        List<String> commands = getCommands(goal, cliOptions);
+        List<String> commands = getCommands(goal, cliParams);
         processBuilder.command(commands);
         return processBuilder;
     }
 
-    List<String> getCommands(String goal, CLIOptions cliOptions) {
+    List<String> getCommands(String goal, List<String> cliParams) {
 
+        String executableName = "migrate-mongo";
+        if (StringUtils.isNotBlank(executablePath)) {
+            executableName = Paths.get(executablePath, executableName).toString();
+        }
         List<String> commands = new ArrayList<>();
-        commands.add("migrate-mongo");
+        commands.add(executableName);
         commands.add(goal);
+        commands.addAll(cliParams);
         if (StringUtils.isNotBlank(configFile)) {
             commands.add("-f");
             commands.add(configFile);
         }
-        commands.addAll(cliOptions.getOptions());
+        dumpCommandLine(commands);
         return commands;
     }
 
@@ -152,5 +128,11 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
         if (process.exitValue() != 0) {
             throw new MojoFailureException("Fail to run mojo. Exit code is: " + process.exitValue());
         }
+    }
+
+    void dumpCommandLine(List<String> commands) {
+        StringBuilder sb = new StringBuilder();
+        commands.forEach(command -> sb.append(command).append(StringUtils.SPACE));
+        log.info("Executing: " + StringUtils.trim(sb.toString()));
     }
 }
