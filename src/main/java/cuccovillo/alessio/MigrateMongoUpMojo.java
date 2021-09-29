@@ -8,15 +8,17 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import java.util.List;
 
-@Mojo(name = "up", defaultPhase = LifecyclePhase.NONE)
+@Mojo(name = MigrateMongoUpMojo.GOAL, defaultPhase = LifecyclePhase.NONE)
 public class MigrateMongoUpMojo extends MigrateMongoAbstractMojo {
 
-    @Parameter
-    List<String> upParams;
+    protected static final String GOAL = "up";
+
+    @Parameter(property = "upParams")
+    List<String> params;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        processMojo("up", upParams);
+        processMojo(GOAL, params);
     }
 }

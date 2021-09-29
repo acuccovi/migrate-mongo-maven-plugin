@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
@@ -19,10 +18,11 @@ import java.util.Scanner;
 
 public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
 
-    final Log log = getLog();
-
     @Parameter
     String executablePath;
+
+    @Parameter
+    String executableExtension;
 
     @Parameter(defaultValue = "false")
     boolean skip;
@@ -55,12 +55,12 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
             printStandardError(process);
             checkExitCode(process);
         } catch (SkipMojoException ignore) {
-            log.info("Skipping migrate-mongo:" + goal + " execution");
+            getLog().info("Skipping migrate-mongo:" + goal + " execution");
         } catch (IOException ex) {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             ex.printStackTrace(pw);
-            log.info(sw.toString());
+            getLog().info(sw.toString());
             throw new MojoExecutionException("Fail to run mojo", ex);
         }
     }
@@ -93,6 +93,9 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
         if (StringUtils.isNotBlank(executablePath)) {
             executableName = Paths.get(executablePath, executableName).toString();
         }
+        if (StringUtils.isNotBlank(executableExtension)) {
+            executableName = Paths.get(executableName, executableExtension).toString();
+        }
         List<String> commands = new ArrayList<>();
         commands.add(executableName);
         commands.add(goal);
@@ -109,7 +112,7 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
 
         try (Scanner in = new Scanner(process.getInputStream())) {
             while (in.hasNextLine()) {
-                log.info(in.nextLine());
+                getLog().info(in.nextLine());
             }
         }
     }
@@ -118,7 +121,7 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
 
         try (Scanner err = new Scanner(process.getErrorStream())) {
             while (err.hasNextLine()) {
-                log.error(err.nextLine());
+                getLog().error(err.nextLine());
             }
         }
     }
@@ -133,6 +136,6 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
     void dumpCommandLine(List<String> commands) {
         StringBuilder sb = new StringBuilder();
         commands.forEach(command -> sb.append(command).append(StringUtils.SPACE));
-        log.info("Executing: " + StringUtils.trim(sb.toString()));
+        getLog().info("Executing: " + StringUtils.trim(sb.toString()));
     }
 }
