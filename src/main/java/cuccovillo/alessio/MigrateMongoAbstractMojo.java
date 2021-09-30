@@ -121,7 +121,11 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
 
         try (Scanner err = new Scanner(process.getErrorStream())) {
             while (err.hasNextLine()) {
-                getLog().error(err.nextLine());
+                if (process.exitValue() != 0) {
+                    getLog().error(err.nextLine());
+                } else {
+                    getLog().warn(err.nextLine());
+                }
             }
         }
     }
