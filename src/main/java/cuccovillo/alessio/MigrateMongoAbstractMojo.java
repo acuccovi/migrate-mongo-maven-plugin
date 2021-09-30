@@ -18,18 +18,46 @@ import java.util.Scanner;
 
 public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
 
+    /**
+     * The path where migrate-mongo is installed.<br>
+     * Useful when the plugin is not able to find it by itself<br>
+     *<br>
+     * This is an optional information
+     */
     @Parameter
     String executablePath;
 
+    /**
+     * The extension of the migrate-mongo executable.<br>
+     * Useful when the plugin is not able to find it by itself<br>
+     *<br>
+     * This information is optional
+     */
     @Parameter
     String executableExtension;
 
+    /**
+     * A boolean value used to skip the execution of the plugin<br>
+     * Useful when the execution is bound to a phase<br>
+     *<br>
+     * This information is optional, defaults to false
+     */
     @Parameter(defaultValue = "false")
     boolean skip;
 
+    /**
+     * The path where the plugin will search the migration configuration file<br>
+     *<br>
+     * This information is optional, defaults to current working directory
+     */
     @Parameter(defaultValue = ".")
     String configPath;
 
+    /**
+     * The name of the migration configuration file, if the default file name is not used<br>
+     *<br>
+     * This information is optional, defaults to migrate-mongo default value
+     */
     @Parameter
     String configFile;
 

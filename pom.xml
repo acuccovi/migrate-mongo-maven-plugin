@@ -9,9 +9,10 @@
     <version>1.0</version>
     <packaging>maven-plugin</packaging>
 
-    <name>migrate-mongo-maven-plugin</name>
+    <name>Migrate Mongo Maven Plugin</name>
     <description>Migrate Mongo Maven Plugin</description>
     <url>https://github.com/acuccovi/migrate-mongo-maven-plugin</url>
+    <inceptionYear>2021</inceptionYear>
 
     <licenses>
         <license>
@@ -126,6 +127,11 @@
                         </reports>
                     </reportSet>
                 </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>3.1.1</version>
             </plugin>
         </plugins>
     </reporting>

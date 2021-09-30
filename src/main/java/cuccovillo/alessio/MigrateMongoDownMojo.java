@@ -8,11 +8,17 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import java.util.List;
 
+/**
+ * Rollback the migrations
+ */
 @Mojo(name = MigrateMongoDownMojo.GOAL, defaultPhase = LifecyclePhase.NONE)
 public class MigrateMongoDownMojo extends MigrateMongoAbstractMojo {
 
     protected static final String GOAL = "down";
 
+    /**
+     * A list of command parameters
+     */
     @Parameter(property = "downParams")
     List<String> params;
 
