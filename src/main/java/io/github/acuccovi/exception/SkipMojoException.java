@@ -1,4 +1,4 @@
-package cuccovillo.alessio.exception;
+package io.github.acuccovi.exception;
 
 public class SkipMojoException extends Exception {
 

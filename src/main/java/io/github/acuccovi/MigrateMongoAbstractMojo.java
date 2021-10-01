@@ -1,6 +1,6 @@
-package cuccovillo.alessio;
+package io.github.acuccovi;
 
-import cuccovillo.alessio.exception.SkipMojoException;
+import io.github.acuccovi.exception.SkipMojoException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
