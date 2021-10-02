@@ -19,12 +19,12 @@ public class MigrateMongoCleanMojo extends MigrateMongoAbstractMojo {
     /**
      * A list of command parameters
      */
-    @Parameter(property = "cleanParams")
-    List<String> params;
+    @Parameter
+    List<String> cleanParams;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        processMojo(GOAL, params);
+        processMojo(GOAL, cleanParams);
     }
 }

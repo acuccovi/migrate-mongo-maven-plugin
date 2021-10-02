@@ -14,17 +14,18 @@ import java.util.List;
 @Mojo(name = MigrateMongoUpMojo.GOAL, defaultPhase = LifecyclePhase.NONE)
 public class MigrateMongoUpMojo extends MigrateMongoAbstractMojo {
 
-    protected static final String GOAL = "up";
+    static final String GOAL = "up";
 
     /**
      * A list of command parameters
      */
-    @Parameter(property = "upParams")
-    List<String> params;
+    @Parameter
+    List<String> upParams;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-
-        processMojo(GOAL, params);
+getLog().info("Starting up!");
+        upParams.forEach(p->getLog().info(p));
+        processMojo(GOAL, upParams);
     }
 }

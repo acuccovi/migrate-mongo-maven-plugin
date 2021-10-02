@@ -19,12 +19,12 @@ public class MigrateMongoStatusMojo extends MigrateMongoAbstractMojo {
     /**
      * A list of command parameters
      */
-    @Parameter(property = "statusParams")
-    List<String> params;
+    @Parameter
+    List<String> statusParams;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        processMojo(GOAL, params);
+        processMojo(GOAL, statusParams);
     }
 }

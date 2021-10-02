@@ -21,7 +21,7 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
     /**
      * The path where migrate-mongo is installed.<br>
      * Useful when the plugin is not able to find it by itself<br>
-     *<br>
+     * <br>
      * This is an optional information
      */
     @Parameter
@@ -30,7 +30,7 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
     /**
      * The extension of the migrate-mongo executable.<br>
      * Useful when the plugin is not able to find it by itself<br>
-     *<br>
+     * <br>
      * This information is optional
      */
     @Parameter
@@ -39,7 +39,7 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
     /**
      * A boolean value used to skip the execution of the plugin<br>
      * Useful when the execution is bound to a phase<br>
-     *<br>
+     * <br>
      * This information is optional, defaults to false
      */
     @Parameter(defaultValue = "false")
@@ -47,7 +47,7 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
 
     /**
      * The path where the plugin will search the migration configuration file<br>
-     *<br>
+     * <br>
      * This information is optional, defaults to current working directory
      */
     @Parameter(defaultValue = ".")
@@ -55,11 +55,19 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
 
     /**
      * The name of the migration configuration file, if the default file name is not used<br>
-     *<br>
+     * <br>
      * This information is optional, defaults to migrate-mongo default value
      */
     @Parameter
     String configFile;
+
+    /**
+     * A list of common command parameters.
+     * <br>
+     * These parameters do have precedence respect of status/clear/up/down parameters
+     */
+    @Parameter
+    List<String> params;
 
     List<String> checkList(List<String> cliParams) {
 
@@ -78,6 +86,8 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
             checkIfShouldSkip();
 
             cliParams = checkList(cliParams);
+            params = checkList(params);
+
             Process process = startProcess(goal, cliParams);
             printStandardOutput(process);
             printStandardError(process);
@@ -127,6 +137,7 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
         List<String> commands = new ArrayList<>();
         commands.add(executableName);
         commands.add(goal);
+        commands.addAll(params);
         commands.addAll(cliParams);
         if (StringUtils.isNotBlank(configFile)) {
             commands.add("-f");
