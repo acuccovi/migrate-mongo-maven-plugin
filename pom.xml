@@ -6,7 +6,7 @@
 
     <groupId>io.github.acuccovi</groupId>
     <artifactId>migrate-mongo-maven-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>maven-plugin</packaging>
 
     <name>Migrate Mongo Maven Plugin</name>
@@ -39,11 +39,11 @@
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
 
@@ -128,10 +128,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>3.0.1</version>
+                <configuration>
+                    <!-- The following value is saved in ~/.m2/settings.xml -->
+                    <passphrase>${gpg.passphrase}</passphrase>
+                </configuration>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
-                        <phase>verify</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>sign</goal>
                         </goals>
@@ -145,8 +149,9 @@
                 <version>1.6.7</version>
                 <extensions>true</extensions>
                 <configuration>
+                    <!-- The userId and password are saved in ~/.m2/settings.xml -->
                     <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                     <!-- Set this to true and the release will automatically proceed and sync to Central Repository will follow  -->
                     <autoReleaseAfterClose>false</autoReleaseAfterClose>
                 </configuration>
