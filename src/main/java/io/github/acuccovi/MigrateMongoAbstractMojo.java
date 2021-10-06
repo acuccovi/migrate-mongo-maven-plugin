@@ -121,6 +121,7 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.directory(new File(configPath));
         List<String> commands = getCommands(goal, cliParams);
+        dumpCommandLine(commands);
         processBuilder.command(commands);
         return processBuilder;
     }
@@ -143,7 +144,6 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
             commands.add("-f");
             commands.add(configFile);
         }
-        dumpCommandLine(commands);
         return commands;
     }
 
@@ -177,6 +177,7 @@ public abstract class MigrateMongoAbstractMojo extends AbstractMojo {
     }
 
     void dumpCommandLine(List<String> commands) {
+
         StringBuilder sb = new StringBuilder();
         commands.forEach(command -> sb.append(command).append(StringUtils.SPACE));
         getLog().info("Executing: " + StringUtils.trim(sb.toString()));

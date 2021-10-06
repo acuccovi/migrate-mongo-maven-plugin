@@ -24,8 +24,7 @@ public class MigrateMongoUpMojo extends MigrateMongoAbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-getLog().info("Starting up!");
-        upParams.forEach(p->getLog().info(p));
+
         processMojo(GOAL, upParams);
     }
 }
